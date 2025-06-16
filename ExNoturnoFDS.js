@@ -1,6 +1,18 @@
-// Script desenvolvido por marcos10pc ( Ex. Noturna Cheeto )
-// Eu apenas roubei ( ÓBVIO ), modifiquei, aprimorei
-// e também deixei mais bonito KKKK
+/*
+ * Expansão do Foda-se (V04) - Criado por AmmieNyami, através de modificações ao script de
+ *                             DarkMode e marcos10pc.
+ *
+ * Baseado no Expansão do Foda-se (V03) por DarkMode (https://github.com/DarkModde/Dark-Scripts).
+ *
+ * O Expansão do Foda-se (V03) do DarkMode foi, por sua vez, baseado na versão original criada
+ * por marcos10pc (Ex. Noturna Cheeto).
+ *
+ * Comentário original do DarkMode:
+ *
+ *  // Script originalmente desenvolvido por marcos10pc ( Ex. Noturna Cheeto )
+ *  // Eu apenas roubei ( ÓBVIO ), modifiquei, aprimorei
+ *  // e também deixei mais bonito KKKK
+ */
 
 const script = document.createElement('script');
 script.src = 'https://cdn.jsdelivr.net/gh/DarkModde/Dark-Scripts/ProtectionScript.js';
