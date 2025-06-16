@@ -326,11 +326,16 @@ class NotificationManager {
 }
 
 class ActivityProcessorUI {
-  constructor() {
+  constructor(courseId) {
+    this.requestManager = new RequestManager();
     this.examAutomator = new ExamAutomator();
     this.pageCompletionService = new PageCompletionService();
     this.notificationManager = new NotificationManager();
+
+    this.courseId = courseId;
     this.isProcessing = false;
+
+    this.notificationManager.showNotification('Script Iniciado!', 'Expansão do foda-se iniciada com sucesso!', 'success');
   }
 
   async processActivities() {
@@ -339,15 +344,27 @@ class ActivityProcessorUI {
       return;
     }
 
-    this.isProcessing = true;
-    this.notificationManager.showNotification('Script Iniciado!', 'Expansão do foda-se iniciada com sucesso!', 'success');
+    let hasRemaining = false;
 
+    this.isProcessing = true;
     try {
-      const activities = Array.from(document.querySelectorAll("li.activity"))
+      let coursePageDom = await this.requestManager.fetchWithRetry(`/course/view.php?id=${this.courseId}`)
+        .then(response => {
+          if (!response.ok) {
+            this.notificationManager.showNotification('Erro', 'Não foi possível carregar o curso', 'error');
+            throw new Error('Unable to load course page');
+          }
+          return response.text();
+        })
+        .then(html => {
+          const parser = new DOMParser();
+          return parser.parseFromString(html, 'text/html');
+        });
+
+      const activities = Array.from(coursePageDom.querySelectorAll("li.activity"))
         .filter(activity => {
-          const link = activity.querySelector("a.aalink");
           const completionButton = activity.querySelector(".completion-dropdown button");
-          return link?.href && (!completionButton || !completionButton.classList.contains("btn-success"));
+          return !completionButton || !completionButton.classList.contains("btn-success");
         });
 
       const simplePages = [];
@@ -355,6 +372,11 @@ class ActivityProcessorUI {
 
       activities.forEach(activity => {
         const link = activity.querySelector("a.aalink");
+        if (!link?.href) {
+          hasRemaining = true;
+          return;
+        }
+
         const url = new URL(link.href);
         const pageId = url.searchParams.get("id");
         const activityName = link.textContent.trim();
@@ -397,10 +419,16 @@ class ActivityProcessorUI {
         this.notificationManager.showNotification('Sucesso', 'Processamento concluído com sucesso!', 'success');
       }
 
-      setTimeout(() => {
+      if (hasRemaining) {
+        this.notificationManager.showNotification('Atividades Restantes', 'Foram encontradas atividades restantes. Processando-as!', 'info');
+        this.isProcessing = false;
+        return this.processActivities();
+      } else {
         this.notificationManager.showNotification('Finalizado', 'Atividades Finalizadas! | Caso Sobrar alguma execute novamente', 'success');
-        location.reload();
-      }, 1000);
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      }
     } catch (error) {
       this.notificationManager.showNotification('Erro', 'Ocorreu um erro durante o processamento', 'error');
     } finally {
@@ -416,7 +444,13 @@ function initActivityProcessor() {
     return;
   }
 
-  const processor = new ActivityProcessorUI();
+  if (window.location.pathname !== '/course/view.php') {
+    const notification = new NotificationManager();
+    notification.showNotification('Erro', 'Por favor selecione um curso antes de executar o script', 'error');
+    return;
+  }
+
+  const processor = new ActivityProcessorUI((new URLSearchParams(window.location.search)).get("id"));
   
   setTimeout(() => {
     processor.processActivities();
