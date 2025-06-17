@@ -15,4 +15,5 @@ Duas mudanças notáveis feitas à versão V03 incluem:
 
 ## Como usar
 
-Para usar, é só abrir a página da Expansão Noturna em algum curso e executar o seguinte JavaScript na barra de endereço do navegador: `javascript:fetch("https://corsproxy.io/?url=https://raw.githubusercontent.com/AmmieNyami/ExNoturnoFDS/refs/heads/master/ExNoturnoFDS.js").then(t=>t.text()).then(eval);`.
+https://github.com/user-attachments/assets/c06c97ad-e7c7-4133-8745-75d84e0cc41b
+
