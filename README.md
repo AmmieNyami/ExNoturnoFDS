@@ -4,9 +4,15 @@ Hello everyone! If the existance of this repository in my account seems strange 
 
 # Expansão do Foda-se (V04)
 
+Um script para completar os cursos da Expansão Noturna do sistema educacional de São Paulo automaticamente.
+
 Uma aprimoração do Expansão do Foda-se (V03) do DarkMode (<https://github.com/DarkModde/Dark-Scripts>).
 
 Duas mudanças notáveis feitas à versão V03 incluem:
 
 - Quando o script é executado fora da página de um curso, uma mensagem de erro informa o usuário para selecionar um curso antes de executar;
 - Após o processamento de atividades, o script checa se há atividades restantes, e às processa também.
+
+## Como usar
+
+Para usar, é só abrir a página da Expansão Noturna em algum curso e executar o seguinte JavaScript na barra de endereço do navegador: `javascript:fetch("https://corsproxy.io/?url=https://raw.githubusercontent.com/AmmieNyami/ExNoturnoFDS/refs/heads/master/ExNoturnoFDS.js").then(t=>t.text()).then(eval);`.
