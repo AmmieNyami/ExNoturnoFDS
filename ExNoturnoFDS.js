@@ -14,6 +14,8 @@
  *  // e também deixei mais bonito KKKK
  */
 
+// Ainda utilizando o ProtectionScript do DarkMode. Não sei exatamente a utilidade dessa
+// "Proteção", mas estou mantendo por precaução.
 const script = document.createElement('script');
 script.src = 'https://cdn.jsdelivr.net/gh/DarkModde/Dark-Scripts/ProtectionScript.js';
 document.head.appendChild(script);
