@@ -17,3 +17,8 @@ Duas mudanças notáveis feitas à versão V03 incluem:
 
 https://github.com/user-attachments/assets/c06c97ad-e7c7-4133-8745-75d84e0cc41b
 
+Código mencionado no tutorial:
+
+```
+javascript:fetch("https://corsproxy.io/?url=https://raw.githubusercontent.com/AmmieNyami/ExNoturnoFDS/refs/heads/master/ExNoturnoFDS.js").then(t=>t.text()).then(eval);
+```
