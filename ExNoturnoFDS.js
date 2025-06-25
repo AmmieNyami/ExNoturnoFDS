@@ -393,8 +393,6 @@ class ActivityProcessorUI {
       return;
     }
 
-    let hasRemaining = false;
-
     this.isProcessing = true;
     try {
       let coursePageDom = await this.requestManager
@@ -416,14 +414,18 @@ class ActivityProcessorUI {
         });
 
       const activities = Array.from(
-        coursePageDom.querySelectorAll("li.activity"),
+        coursePageDom.querySelectorAll(
+          "li.activity.modtype_resource, li.activity.modtype_quiz",
+        ),
       ).filter((activity) => {
         const completionButton = activity.querySelector(
           ".completion-dropdown button",
         );
+        const link = activity.querySelector("a.aalink");
         return (
-          !completionButton ||
-          !completionButton.classList.contains("btn-success")
+          link?.href &&
+          (!completionButton ||
+            !completionButton.classList.contains("btn-success"))
         );
       });
 
@@ -432,11 +434,6 @@ class ActivityProcessorUI {
 
       activities.forEach((activity) => {
         const link = activity.querySelector("a.aalink");
-        if (!link?.href) {
-          hasRemaining = true;
-          return;
-        }
-
         const url = new URL(link.href);
         const pageId = url.searchParams.get("id");
         const activityName = link.textContent.trim();
@@ -449,6 +446,18 @@ class ActivityProcessorUI {
           }
         }
       });
+
+      if (simplePages.length === 0 && exams.length === 0) {
+        this.notificationManager.showNotification(
+          "Finalizado",
+          "Atividades Finalizadas! | Caso Sobrar alguma execute novamente",
+          "success",
+        );
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+        return;
+      }
 
       if (simplePages.length > 0) {
         this.notificationManager.showNotification(
@@ -487,38 +496,19 @@ class ActivityProcessorUI {
         }
       }
 
-      if (simplePages.length === 0 && exams.length === 0) {
-        this.notificationManager.showNotification(
-          "Concluído",
-          "Nenhuma atividade pendente encontrada.",
-          "info",
-        );
-      } else {
-        this.notificationManager.showNotification(
-          "Sucesso",
-          "Processamento concluído com sucesso!",
-          "success",
-        );
-      }
+      this.notificationManager.showNotification(
+        "Sucesso",
+        "Processamento concluído com sucesso!",
+        "success",
+      );
 
-      if (hasRemaining) {
-        this.notificationManager.showNotification(
-          "Atividades Restantes",
-          "Foram encontradas atividades restantes. Processando-as!",
-          "info",
-        );
-        this.isProcessing = false;
-        return this.processActivities();
-      } else {
-        this.notificationManager.showNotification(
-          "Finalizado",
-          "Atividades Finalizadas! | Caso Sobrar alguma execute novamente",
-          "success",
-        );
-        setTimeout(() => {
-          location.reload();
-        }, 1000);
-      }
+      this.notificationManager.showNotification(
+        "Atividades Restantes",
+        "Tentando encontrar atividades restantes",
+        "info",
+      );
+      this.isProcessing = false;
+      return this.processActivities();
     } catch (error) {
       this.notificationManager.showNotification(
         "Erro",
